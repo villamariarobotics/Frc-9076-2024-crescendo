@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.PivotHoldButtonTestCommand;
 import frc.robot.commands.PivotTestCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -41,7 +42,10 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
   private EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
+
   private Joystick controller = new Joystick(0);
+  // the a button on the controller
+  private JoystickButton A_BUTTON = new JoystickButton(controller, 1);
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -77,15 +81,21 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    A_BUTTON.onTrue(new PivotHoldButtonTestCommand(m_pivotSubsystem));
+
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
+   
   }
 
-private void defaultCommands() {
+  private void defaultCommands() {
+    //put commands here that should run by default
     m_pivotSubsystem.setDefaultCommand(new PivotTestCommand(m_pivotSubsystem, controller));
-}
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

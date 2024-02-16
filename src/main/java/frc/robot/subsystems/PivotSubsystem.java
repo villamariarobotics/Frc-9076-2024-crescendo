@@ -4,19 +4,16 @@
 
 package frc.robot.subsystems;
 
-
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
 
   private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed);
-  private SparkAbsoluteEncoder pivotEncoder = new SparkAbsoluteEncoder();
- 
+//  private encoder  pivotEncoder = new CANSparkMax(14, MotorType.kBrushless);
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
     pivotMotor.restoreFactoryDefaults();
@@ -26,6 +23,7 @@ public class PivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("pivot motor speed", pivotMotor.get());
 
   }
   public void setPivotSpeed( double speed) {
