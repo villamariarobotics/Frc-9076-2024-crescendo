@@ -13,17 +13,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.PivotTestCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -32,9 +37,11 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
+  // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
+  private PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
+  private EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
+  private Joystick controller = new Joystick(0);
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -44,6 +51,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    defaultCommands();
+
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -74,6 +83,9 @@ public class RobotContainer {
             m_robotDrive));
   }
 
+private void defaultCommands() {
+    m_pivotSubsystem.setDefaultCommand(new PivotTestCommand(m_pivotSubsystem, controller));
+}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
