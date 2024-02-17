@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.PivotHoldButtonTestCommand;
-import frc.robot.commands.PivotTestCommand;
+import frc.robot.commands.EndEffector.DefaultIntakeSpinCommand;
+import frc.robot.commands.Pivot.PivotHoldButtonTestCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
@@ -43,7 +43,7 @@ public class RobotContainer {
   private PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
   private EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
 
-  private Joystick controller = new Joystick(0);
+  private Joystick controller = new Joystick(1);
   // the a button on the controller
   private JoystickButton A_BUTTON = new JoystickButton(controller, 1);
   // The driver's controller
@@ -61,7 +61,7 @@ public class RobotContainer {
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
+        // Turning is controlled by the X  of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
@@ -94,7 +94,7 @@ public class RobotContainer {
 
   private void defaultCommands() {
     //put commands here that should run by default
-    m_pivotSubsystem.setDefaultCommand(new PivotTestCommand(m_pivotSubsystem, controller));
+    m_endEffectorSubsystem.setDefaultCommand(new DefaultIntakeSpinCommand(m_endEffectorSubsystem));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
