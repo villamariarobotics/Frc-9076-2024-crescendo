@@ -11,12 +11,12 @@ public class PivotGoToAmpPositionCommand extends Command {
 
     private PivotSubsystem m_pivotSubsystem;
 
-    double angle = 90; //! Change this to the desired angle
+    double target_angle = 90; //! Change this to the desired angle
   /** Creates a new PivotGoToAmpPosition. */
-  public PivotGoToAmpPositionCommand(PivotSubsystem pivot, double angle) {
+  public PivotGoToAmpPositionCommand(PivotSubsystem pivot, double target_angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = pivot;
-    this.angle = angle;
+    this.target_angle = target_angle;
     addRequirements(m_pivotSubsystem);
   }
 
@@ -29,7 +29,7 @@ public class PivotGoToAmpPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_pivotSubsystem.moveMotorToAngle(angle);
+    m_pivotSubsystem.moveMotorToAngle(target_angle);
   }
 
   // Called once the command ends or is interrupted.
