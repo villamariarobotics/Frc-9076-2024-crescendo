@@ -9,7 +9,7 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class DefaultIntakeSpinCommand extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
-  double defaultSpeed = 0.5; //! Change this to the desired speed
+  double defaultSpeed = 0.4; //! Change this to the desired speed
   /** Creates a new DefaultIntakeSpinCommand. */
   public DefaultIntakeSpinCommand(EndEffectorSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
