@@ -77,7 +77,10 @@ public class DriveSubsystem extends SubsystemBase {
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-        });
+        }
+      // sends values to smatr dashboard
+      SmartDashboard.putNumber("Gyro Angle", getHeading());
+    );
   }
 
   /**
