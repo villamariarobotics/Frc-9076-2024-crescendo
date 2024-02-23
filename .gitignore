@@ -158,6 +158,7 @@ gradle-app.setting
 .settings/
 bin/
 
+
 # IntelliJ
 *.iml
 *.ipr
@@ -176,3 +177,6 @@ logs/
 
 # Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
+
+# folder for vscode config files
+.vscod

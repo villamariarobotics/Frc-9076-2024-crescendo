@@ -25,5 +25,18 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "cSpell.words": [
+    "ADXRS",
+    "Brushless",
+    "Deadband",
+    "odometry",
+    "setpoint",
+    "setpoints",
+    "smartdashboard",
+    "teleop",
+    "teleoperated",
+    "wpilib",
+    "wpilibj"
+  ]
 }
