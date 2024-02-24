@@ -81,7 +81,6 @@ public class DriveSubsystem extends SubsystemBase {
         });
     // sends values to smart dashboard
     SmartDashboard.putNumber("Gyro", getHeading());
-
   }
 
   /**

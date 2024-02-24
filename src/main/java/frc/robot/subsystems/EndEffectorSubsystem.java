@@ -12,6 +12,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   private CANSparkMax intakeMotor = new CANSparkMax(15, CANSparkMax.MotorType.kBrushless);
   private CANSparkMax shooterMotor = new CANSparkMax(16, CANSparkMax.MotorType.kBrushless);
+
   /** Creates a new EndEffectorSubsystem. */
   public EndEffectorSubsystem() {
     intakeMotor.restoreFactoryDefaults();

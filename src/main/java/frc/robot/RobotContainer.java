@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
-
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -57,11 +56,10 @@ public class RobotContainer {
     configureButtonBindings();
     defaultCommands();
 
-
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
-        // Turning is controlled by the X  of the right stick.
+        // Turning is controlled by the X of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
@@ -89,13 +87,13 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-   
   }
 
   private void defaultCommands() {
-    //put commands here that should run by default
+    // put commands here that should run by default
     m_endEffectorSubsystem.setDefaultCommand(new DefaultIntakeSpinCommand(m_endEffectorSubsystem));
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

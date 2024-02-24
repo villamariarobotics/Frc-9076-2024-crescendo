@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
 
-    private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushless); //! Change to kBrushed before running (changed for simulation)
+    private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushless); // ! Change to kBrushed before running
+                                                                                // (changed for simulation)
     private AbsoluteEncoder pivotEncoder;
 
     // PID controller for precise positioning
