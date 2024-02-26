@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -47,6 +49,8 @@ public class Robot extends TimedRobot {
    * and
    * SmartDashboard integrated updating.
    */
+  private PowerDistribution powerDistribution; // Instantiate the PowerDistribution object
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -57,6 +61,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    // Get the battery voltage
+    SmartDashboard.putNumber("Battery voltage", powerDistribution.getVoltage());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
