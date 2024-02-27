@@ -35,6 +35,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
     shooterMotor.set(speed);
   }
 
+  public double getIntakePower() {
+    return intakeMotor.getBusVoltage();
+  }
+
   public void stop() {
     intakeMotor.set(0);
     shooterMotor.set(0);
