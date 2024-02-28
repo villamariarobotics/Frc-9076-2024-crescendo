@@ -2,18 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Pivot;
+package frc.robot.commands.Pivot.encoder;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotSubsystemEncoder;
 
-public class PivotGoToAmpPositionCommand extends Command {
+public class PivotGoToIntakePositionCommandencoder extends Command {
 
-    private PivotSubsystem m_pivotSubsystem;
+  private PivotSubsystemEncoder m_pivotSubsystem;
 
-    double target_angle = 90; //! Change this to the desired angle
-  /** Creates a new PivotGoToAmpPosition. */
-  public PivotGoToAmpPositionCommand(PivotSubsystem pivot, double target_angle) {
+  double target_angle = 90; // ! Change this to the desired angle
+
+  /** Creates a new PivotGoToIntakePositionCommand. */
+  public PivotGoToIntakePositionCommandencoder(PivotSubsystemEncoder pivot, double target_angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = pivot;
     this.target_angle = target_angle;
@@ -23,7 +24,6 @@ public class PivotGoToAmpPositionCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

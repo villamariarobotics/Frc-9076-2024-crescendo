@@ -8,7 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PivotSubsystem extends SubsystemBase {
+public class PivotSubsystemEncoder extends SubsystemBase {
 
     private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed); // ! Change to kBrushed before running
                                                                               // (changed for simulation)
@@ -20,7 +20,7 @@ public class PivotSubsystem extends SubsystemBase {
     /**
      * Creates a new PivotSubsystem.
      */
-    public PivotSubsystem() {
+    public PivotSubsystemEncoder() {
         pivotMotor.restoreFactoryDefaults();
         pivotMotor.setInverted(false);
 

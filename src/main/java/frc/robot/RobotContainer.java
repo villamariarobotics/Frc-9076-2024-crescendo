@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.EndEffector.DefaultIntakeSpinCommand;
-import frc.robot.commands.Pivot.PivotHoldButtonTestCommand;
+
+import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.PivotSubsystem;
+// import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.PivotLimitSwitchSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -39,12 +39,13 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
-  private EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
+  private PivotLimitSwitchSubsystem m_pivotSubsystem = new PivotLimitSwitchSubsystem();
+  // private EndEffectorSubsystem m_endEffectorSubsystem = new
+  // EndEffectorSubsystem();
 
   private Joystick controller = new Joystick(1);
   // the a button on the controller
-  private JoystickButton A_BUTTON = new JoystickButton(controller, 1);
+  // private JoystickButton A_BUTTON = new JoystickButton(controller, 1);
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -80,8 +81,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    A_BUTTON.onTrue(new PivotHoldButtonTestCommand(m_pivotSubsystem));
-
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
@@ -91,7 +90,10 @@ public class RobotContainer {
 
   private void defaultCommands() {
     // put commands here that should run by default
-    m_endEffectorSubsystem.setDefaultCommand(new DefaultIntakeSpinCommand(m_endEffectorSubsystem));
+    // m_endEffectorSubsystem.setDefaultCommand(new
+    // DefaultIntakeSpinCommand(m_endEffectorSubsystem));
+    m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, controller));
+
   }
 
   /**

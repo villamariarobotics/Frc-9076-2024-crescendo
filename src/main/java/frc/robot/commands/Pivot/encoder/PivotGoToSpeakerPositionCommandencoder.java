@@ -2,43 +2,34 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Pivot;
+package frc.robot.commands.Pivot.encoder;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotSubsystemEncoder;
 
-public class PivotTestCommand extends Command {
+public class PivotGoToSpeakerPositionCommandencoder extends Command {
 
-  private PivotSubsystem m_pivotSubsystem;
-  private Joystick controller;
+  private PivotSubsystemEncoder m_pivotSubsystem;
+  double target_angle = 90; // ! Change this to the desired angle
 
-  double speed;
-
-  SlewRateLimiter speedLimiter = new SlewRateLimiter(1);
-
-  /** Creates a new PivotTestCommand. */
-  public PivotTestCommand(PivotSubsystem pivot, Joystick con) {
+  /** Creates a new PivotGoToSpeakerPositionCommand. */
+  public PivotGoToSpeakerPositionCommandencoder(PivotSubsystemEncoder pivot, double target_angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = pivot;
-    this.controller = con;
-
+    this.target_angle = target_angle;
     addRequirements(m_pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    speed = 0;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     speed = speedLimiter.calculate(controller.getRawAxis(1)); //y axis (hopefully) 
-
-      m_pivotSubsystem.setPivotSpeed(speedLimiter.calculate(speed));
+    m_pivotSubsystem.moveMotorToAngle(target_angle);
   }
 
   // Called once the command ends or is interrupted.
