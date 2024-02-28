@@ -4,12 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
+// import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.cameraserver.CameraServer;
+// import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -49,7 +49,8 @@ public class Robot extends TimedRobot {
    * and
    * SmartDashboard integrated updating.
    */
-  private PowerDistribution powerDistribution; // Instantiate the PowerDistribution object
+  // private PowerDistribution powerDistribution; // Instantiate the
+  // PowerDistribution object
 
   @Override
   public void robotPeriodic() {
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     // Get the battery voltage
-    SmartDashboard.putNumber("Battery voltage", powerDistribution.getVoltage());
+    // SmartDashboard.putNumber("Battery voltage", powerDistribution.getVoltage());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

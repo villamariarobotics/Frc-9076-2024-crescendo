@@ -1,17 +1,7 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [14]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [4]": {
+      "ADXRS450[0]": {
         "header": {
           "open": true
         }
