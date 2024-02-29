@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Pivot;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PivotLimitSwitchSubsystem;
@@ -15,8 +14,6 @@ public class pivotMoveCommand extends Command {
   private Joystick controller;
 
   double speed;
-
-  SlewRateLimiter speedLimiter = new SlewRateLimiter(1);
 
   /** Creates a new PivotTestCommand. */
   public pivotMoveCommand(PivotLimitSwitchSubsystem pivot, Joystick con) {
@@ -30,15 +27,14 @@ public class pivotMoveCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    speed = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    speed = speedLimiter.calculate(controller.getRawAxis(1)); // y axis (hopefully)
+    speed = (controller.getRawAxis(1)); // y axis (hopefully)
 
-    m_pivotSubsystem.setMotorSpeed(speedLimiter.calculate(speed));
+    m_pivotSubsystem.setMotorSpeed((speed));
   }
 
   // Called once the command ends or is interrupted.

@@ -8,14 +8,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotLimitSwitchSubsystem extends SubsystemBase {
   private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed);
   private DigitalInput upperLimitSwitch;
   private DigitalInput lowerLimitSwitch;
-  Joystick joystick = new Joystick(1);
 
   /** Creates a new PivotLimitSwitchSubsystem. */
   public PivotLimitSwitchSubsystem() {
