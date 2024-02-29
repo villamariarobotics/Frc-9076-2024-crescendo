@@ -43,7 +43,7 @@ public class RobotContainer {
   // private EndEffectorSubsystem m_endEffectorSubsystem = new
   // EndEffectorSubsystem();
 
-  private Joystick controller = new Joystick(1);
+  private Joystick EndEffectorcontroller = new Joystick(1);
   // the a button on the controller
   // private JoystickButton A_BUTTON = new JoystickButton(controller, 1);
   // The driver's controller
@@ -92,7 +92,7 @@ public class RobotContainer {
     // put commands here that should run by default
     // m_endEffectorSubsystem.setDefaultCommand(new
     // DefaultIntakeSpinCommand(m_endEffectorSubsystem));
-    m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, controller));
+    m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
 
   }
 
@@ -102,6 +102,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -114,10 +115,16 @@ public class RobotContainer {
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+        List.of(new Translation2d(-1, 0), new Translation2d(-3, 0.1)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
+        new Pose2d(-3, 0, new Rotation2d(0)),
+        config)
+    // .concatenate(
+    // TrajectoryGenerator.generateTrajectory(
+    // List.of(new Pose2d(3, 0, new Rotation2d(0)), new Pose2d(3, 0, new
+    // Rotation2d(0))),
+    // config))
+    ;
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);

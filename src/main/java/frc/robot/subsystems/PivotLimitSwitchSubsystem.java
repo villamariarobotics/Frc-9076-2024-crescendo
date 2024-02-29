@@ -15,11 +15,10 @@ public class PivotLimitSwitchSubsystem extends SubsystemBase {
   private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed);
   private DigitalInput upperLimitSwitch;
   private DigitalInput lowerLimitSwitch;
-  Joystick joystick = new Joystick(0);
+  Joystick joystick = new Joystick(1);
 
   /** Creates a new PivotLimitSwitchSubsystem. */
   public PivotLimitSwitchSubsystem() {
-    pivotMotor.restoreFactoryDefaults();
     pivotMotor.setInverted(false);
 
     upperLimitSwitch = new DigitalInput(0);

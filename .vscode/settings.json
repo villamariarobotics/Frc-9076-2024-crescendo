@@ -30,6 +30,7 @@
     "ADXRS",
     "Brushless",
     "Deadband",
+    "Effectorcontroller",
     "odometry",
     "revrobotics",
     "setpoint",
@@ -38,6 +39,7 @@
     "stepsize",
     "teleop",
     "teleoperated",
+    "testpivotcomand",
     "wpilib",
     "wpilibj"
   ]
