@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.EndEffector.fireNote;
+import frc.robot.commands.EndEffector.FireNoteEndEffectorCommand;
+import frc.robot.commands.EndEffector.SpinShooterCommand;
 import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 // import frc.robot.subsystems.EndEffectorSubsystem;
@@ -88,14 +89,13 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    left_trigger.whileTrue(new fireNote(m_endEffectorSubsystem));
+    left_trigger.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem));
   }
 
   private void defaultCommands() {
     // put commands here that should run by default
-    // m_endEffectorSubsystem.setDefaultCommand(new
-    // DefaultIntakeSpinCommand(m_endEffectorSubsystem));
     m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
+    m_endEffectorSubsystem.setDefaultCommand(new SpinShooterCommand(m_endEffectorSubsystem, EndEffectorcontroller));
 
   }
 

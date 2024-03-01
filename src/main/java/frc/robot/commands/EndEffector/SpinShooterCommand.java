@@ -4,29 +4,36 @@
 
 package frc.robot.commands.EndEffector;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffectorSubsystem;
+// No changes needed, removing unused import statement.
 
-public class fireNote extends Command {
+public class SpinShooterCommand extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
-  double moveNoteToShooterSpeed = 0.4; // ! Change this to the desired speed
+  private Joystick controller;
+  double speed;
 
-  /** Creates a new fireNote. */
-  public fireNote(EndEffectorSubsystem intake) {
+  /** Creates a new SpinShooterCommand. */
+  public SpinShooterCommand(EndEffectorSubsystem shooter, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_EndEffectorSubsystem = intake;
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.m_EndEffectorSubsystem = shooter;
+    this.controller = con;
     addRequirements(m_EndEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    speed = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_EndEffectorSubsystem.setIntakeSpeed(moveNoteToShooterSpeed);
+    speed = controller.getRawAxis(3);
+    m_EndEffectorSubsystem.setShooterSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
