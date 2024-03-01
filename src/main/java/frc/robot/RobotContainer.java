@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-
+import frc.robot.commands.EndEffector.fireNote;
 import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 // import frc.robot.subsystems.EndEffectorSubsystem;
@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import frc.robot.subsystems.EndEffectorSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -40,12 +41,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private PivotLimitSwitchSubsystem m_pivotSubsystem = new PivotLimitSwitchSubsystem();
-  // private EndEffectorSubsystem m_endEffectorSubsystem = new
-  // EndEffectorSubsystem();
+  private EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
 
   private Joystick EndEffectorcontroller = new Joystick(1);
   // the a button on the controller
-  // private JoystickButton A_BUTTON = new JoystickButton(controller, 1);
+  // private JoystickButton A_BUTTON = new JoystickButton(EndEffectorcontroller,
+  // 1);
+  private JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 2);
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -86,6 +88,7 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
+    left_trigger.whileTrue(new fireNote(m_endEffectorSubsystem));
   }
 
   private void defaultCommands() {
