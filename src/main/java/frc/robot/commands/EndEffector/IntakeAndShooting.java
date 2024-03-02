@@ -26,13 +26,13 @@ public class IntakeAndShooting extends Command {
   @Override
   public void initialize() {
     shooterSpeed = 1;
+    m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     intakeSpeed = controller.getRawAxis(3);
-    m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
     m_EndEffectorSubsystem.setIntakeSpeed(intakeSpeed);
   }
 

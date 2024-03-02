@@ -51,7 +51,7 @@ public class RobotContainer {
   // 1);
   private JoystickButton left_bumper = new JoystickButton(EndEffectorcontroller, 5); //! TO CHANGE
   private JoystickButton right_bumper = new JoystickButton(EndEffectorcontroller, 6); //! TO CHANGE
-  private JoystickButton Y_button = new JoystickButton(EndEffectorcontroller, 3); //! TO CHANGE
+  private JoystickButton Y_button = new JoystickButton(EndEffectorcontroller, 4); //! TO CHANGE
   
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -93,10 +93,9 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    left_bumper.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem, EndEffectorcontroller));
+    left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
     right_bumper.whileTrue(new EndEffectorIntakeNoteCommand(m_endEffectorSubsystem, EndEffectorcontroller));
-    Y_button.onTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
-    
+    Y_button.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem, EndEffectorcontroller));
   }
 
   private void defaultCommands() {
@@ -107,6 +106,7 @@ public class RobotContainer {
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
+   * '
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
