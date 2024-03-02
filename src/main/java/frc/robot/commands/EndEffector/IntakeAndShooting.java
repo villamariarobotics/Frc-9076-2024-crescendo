@@ -4,32 +4,44 @@
 
 package frc.robot.commands.EndEffector;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
-public class DefaultIntakeSpinCommand extends Command {
+public class IntakeAndShooting extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
-  double defaultSpeed = 0.4; //! Change this to the desired speed
-  /** Creates a new DefaultIntakeSpinCommand. */
-  public DefaultIntakeSpinCommand(EndEffectorSubsystem intake) {
+  private Joystick controller;
+  double shooterSpeed;
+  double intakeSpeed;
+
+  /** Creates a new Note intaking and shooting command. */
+  public IntakeAndShooting(EndEffectorSubsystem endeffector, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_EndEffectorSubsystem = intake;
+    this.m_EndEffectorSubsystem = endeffector;
+    this.controller = con;
     addRequirements(m_EndEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooterSpeed = 1;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_EndEffectorSubsystem.setIntakeSpeed(defaultSpeed);
+    intakeSpeed = controller.getRawAxis(3);
+    m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
+    m_EndEffectorSubsystem.setIntakeSpeed(intakeSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_EndEffectorSubsystem.setShooterSpeed(0);
+    m_EndEffectorSubsystem.setIntakeSpeed(0);
+  }
 
   // Returns true when the command should end.
   @Override

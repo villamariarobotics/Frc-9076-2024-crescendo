@@ -9,9 +9,9 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class EndEffectorIntakeNoteCommand extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
-  double intakeSpeed = 0.4; // ! Change this to the desired speed
+  double speed;
 
-  /** Creates a new IntakeNoteCommand. */
+  /** Creates a new Note intaking command. */
   public EndEffectorIntakeNoteCommand(EndEffectorSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_EndEffectorSubsystem = intake;
@@ -21,21 +21,22 @@ public class EndEffectorIntakeNoteCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    speed = 0.2;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_EndEffectorSubsystem.setIntakeSpeed(intakeSpeed);
+    m_EndEffectorSubsystem.setIntakeSpeed(speed);
+  }
+
+  public void end(boolean interrupted) {
+    m_EndEffectorSubsystem.setIntakeSpeed(0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public boolean isFinished() {
-    double maxVoltage = 5.0; // Change this to the desired maximum voltage
-    if (m_EndEffectorSubsystem.getIntakePower() > maxVoltage) {
-      return true;
-    }
-    return false; // Continue the command
+    return false;
   }
 }
