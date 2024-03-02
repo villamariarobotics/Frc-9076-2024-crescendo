@@ -4,29 +4,32 @@
 
 package frc.robot.commands.EndEffector;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class EndEffectorIntakeNoteCommand extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
+  private Joystick controller;
   double speed;
 
   /** Creates a new Note intaking command. */
-  public EndEffectorIntakeNoteCommand(EndEffectorSubsystem intake) {
+  public EndEffectorIntakeNoteCommand(EndEffectorSubsystem intake, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_EndEffectorSubsystem = intake;
+    this.controller = con;
     addRequirements(m_EndEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    speed = 0.2;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    speed = controller.getRawAxis(3);
     m_EndEffectorSubsystem.setIntakeSpeed(speed);
   }
 

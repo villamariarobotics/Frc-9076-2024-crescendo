@@ -94,7 +94,7 @@ public class RobotContainer {
             m_robotDrive));
 
     left_bumper.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem, EndEffectorcontroller));
-    right_bumper.whileTrue(new EndEffectorIntakeNoteCommand(m_endEffectorSubsystem));
+    right_bumper.whileTrue(new EndEffectorIntakeNoteCommand(m_endEffectorSubsystem, EndEffectorcontroller));
     Y_button.onTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
     
   }
