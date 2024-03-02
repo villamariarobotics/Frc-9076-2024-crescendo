@@ -4,17 +4,20 @@
 
 package frc.robot.commands.EndEffector;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class FireNoteEndEffectorCommand extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
-  double moveNoteToShooterSpeed = 0.4; // ! Change this to the desired speed
+  private Joystick controller;
+  double shooterSpeed;
 
-  /** Creates a new fireNote. */
-  public FireNoteEndEffectorCommand(EndEffectorSubsystem intake) {
+  /** Creates a new Note shooting command. */
+  public FireNoteEndEffectorCommand(EndEffectorSubsystem shooter, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_EndEffectorSubsystem = intake;
+    this.m_EndEffectorSubsystem = shooter;
+    this.controller = con;
     addRequirements(m_EndEffectorSubsystem);
   }
 
@@ -26,12 +29,14 @@ public class FireNoteEndEffectorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_EndEffectorSubsystem.setIntakeSpeed(moveNoteToShooterSpeed);
+    shooterSpeed = controller.getRawAxis(3);
+    m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_EndEffectorSubsystem.setShooterSpeed(0);
   }
 
   // Returns true when the command should end.

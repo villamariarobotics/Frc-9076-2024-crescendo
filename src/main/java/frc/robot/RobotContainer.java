@@ -19,8 +19,9 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.EndEffector.EndEffectorIntakeNoteCommand;
 import frc.robot.commands.EndEffector.FireNoteEndEffectorCommand;
-import frc.robot.commands.EndEffector.SpinShooterCommand;
+import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 // import frc.robot.subsystems.EndEffectorSubsystem;
@@ -48,7 +49,10 @@ public class RobotContainer {
   // the a button on the controller
   // private JoystickButton A_BUTTON = new JoystickButton(EndEffectorcontroller,
   // 1);
-  private JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 2);
+  private JoystickButton left_bumper = new JoystickButton(EndEffectorcontroller, 5); //! TO CHANGE
+  private JoystickButton right_bumper = new JoystickButton(EndEffectorcontroller, 6); //! TO CHANGE
+  private JoystickButton Y_button = new JoystickButton(EndEffectorcontroller, 3); //! TO CHANGE
+  
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -89,14 +93,15 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    left_trigger.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem));
+    left_bumper.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem, EndEffectorcontroller));
+    right_bumper.whileTrue(new EndEffectorIntakeNoteCommand(m_endEffectorSubsystem));
+    Y_button.onTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
+    
   }
 
   private void defaultCommands() {
     // put commands here that should run by default
     m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
-    m_endEffectorSubsystem.setDefaultCommand(new SpinShooterCommand(m_endEffectorSubsystem, EndEffectorcontroller));
-
   }
 
   /**

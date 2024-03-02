@@ -19,8 +19,8 @@ public class PivotLimitSwitchSubsystem extends SubsystemBase {
   public PivotLimitSwitchSubsystem() {
     pivotMotor.setInverted(false);
 
-    upperLimitSwitch = new DigitalInput(0);
-    lowerLimitSwitch = new DigitalInput(1);
+    upperLimitSwitch = new DigitalInput(1);
+    lowerLimitSwitch = new DigitalInput(0);
   }
 
   @Override
