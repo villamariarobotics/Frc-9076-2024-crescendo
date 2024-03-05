@@ -32,6 +32,8 @@
     "Deadband",
     "Effectorcontroller",
     "odometry",
+    "photonlib",
+    "photonvision",
     "revrobotics",
     "setpoint",
     "setpoints",
