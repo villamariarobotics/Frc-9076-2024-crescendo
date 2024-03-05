@@ -25,7 +25,7 @@ public class IntakeAndShooting extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSpeed = 1;
+    shooterSpeed = 0.5;
     m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
   }
 
