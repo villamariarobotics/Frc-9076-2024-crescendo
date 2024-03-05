@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
-public class EndEffectorIntakeNoteCommand extends Command {
+public class IntakingNote extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
   private Joystick controller;
   double speed;
 
   /** Creates a new Note intaking command. */
-  public EndEffectorIntakeNoteCommand(EndEffectorSubsystem intake, Joystick con) {
+  public IntakingNote(EndEffectorSubsystem intake, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_EndEffectorSubsystem = intake;
     this.controller = con;

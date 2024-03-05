@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.EndEffector.EndEffectorIntakeNoteCommand;
-import frc.robot.commands.EndEffector.FireNoteEndEffectorCommand;
-import frc.robot.commands.EndEffector.IntakeAndShooting;
+import frc.robot.commands.EndEffector.IntakingNote;
+import frc.robot.commands.EndEffector.ShootingNote;
 import frc.robot.commands.Pivot.pivotMoveCommand;
+import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
 // import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.PivotLimitSwitchSubsystem;
@@ -94,8 +94,8 @@ public class RobotContainer {
             m_robotDrive));
 
     left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
-    right_bumper.whileTrue(new EndEffectorIntakeNoteCommand(m_endEffectorSubsystem, EndEffectorcontroller));
-    Y_button.whileTrue(new FireNoteEndEffectorCommand(m_endEffectorSubsystem, EndEffectorcontroller));
+    right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
+    Y_button.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller));
   }
 
   private void defaultCommands() {

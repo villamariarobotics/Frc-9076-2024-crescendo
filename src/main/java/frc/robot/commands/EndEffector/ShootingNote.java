@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
-public class FireNoteEndEffectorCommand extends Command {
+public class ShootingNote extends Command {
   private EndEffectorSubsystem m_EndEffectorSubsystem;
   private Joystick controller;
   double shooterSpeed;
 
   /** Creates a new Note shooting command. */
-  public FireNoteEndEffectorCommand(EndEffectorSubsystem shooter, Joystick con) {
+  public ShootingNote(EndEffectorSubsystem shooter, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_EndEffectorSubsystem = shooter;
     this.controller = con;
