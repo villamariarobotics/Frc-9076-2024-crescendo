@@ -5,12 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.net.PortForwarder;
-// import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-// import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,11 +39,14 @@ public class Robot extends TimedRobot {
     // Give access to the coprocessor (running Photonvision) by using Port 5800
     PortForwarder.add(5800, "photonvision.local", 5800);
 
+    PowerDistribution m_pdh = new PowerDistribution(1, ModuleType.kRev);
+    double voltage = m_pdh.getVoltage();
+
+    SmartDashboard.putNumber("Voltage", voltage);
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    
-    //// CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -53,8 +58,11 @@ public class Robot extends TimedRobot {
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and
    * SmartDashboard integrated updating.
+   * 
+   * @return
    */
-  //// private PowerDistribution powerDistribution; // Instantiate the PowerDistribution object
+  // private PowerDistribution powerDistribution; // Instantiate the
+  // PowerDistribution object
 
   @Override
   public void robotPeriodic() {
@@ -66,9 +74,8 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("match time", DriverStation.getMatchTime());
 
-    // Get the battery voltage
-    //// SmartDashboard.putNumber("Battery voltage", powerDistribution.getVoltage());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

@@ -8,10 +8,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotLimitSwitchSubsystem extends SubsystemBase {
-  private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed);
+  private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushless);
   private DigitalInput upperLimitSwitch;
   private DigitalInput lowerLimitSwitch;
 
@@ -26,6 +27,10 @@ public class PivotLimitSwitchSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
+    SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
+    SmartDashboard.putNumber("encoder value", 0); // ! added as a blank for dashboard configuration
+
   }
 
   public void setMotorSpeed(double speed) {

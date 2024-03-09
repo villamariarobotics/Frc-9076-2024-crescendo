@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -79,9 +80,26 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-    // sends values to smart dashboard
-    SmartDashboard.putNumber("Gyro", getHeading());
+
+    // Upload robot pose to SmartDashboard
+    Pose2d pose = getPose();
+    SmartDashboard.putNumber("Robot X", pose.getTranslation().getX());
+    SmartDashboard.putNumber("Robot Y", pose.getTranslation().getY());
+    SmartDashboard.putNumber("Robot Heading", pose.getRotation().getDegrees());
+
+    // Update Field2d with robot pose
+    m_field.setRobotPose(getPose());
+
+    SmartDashboard.putNumber("Gyroscope", getHeading());
+    // Add Field2d to SmartDashboard
+    SmartDashboard.putData("Field", m_field);
   }
+  // ...
+
+  // Create Field2d for visualizing robot position on the field
+  private final Field2d m_field = new Field2d();
+
+  /** Creates a new DriveSubsystem. */
 
   /**
    * Returns the currently-estimated pose of the robot.
