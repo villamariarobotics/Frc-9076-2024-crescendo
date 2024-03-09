@@ -62,46 +62,45 @@ public class PivotTurretModeSubsystem extends SubsystemBase {
   }
 
   private double getDistanceFromAprilTag(String allianceColor) {
-    // Replace with your logic to get the distance from the AprilTag
-    // For example, you can use a camera and computer vision algorithms
-    // to detect and calculate the distance from the AprilTag.
-    // Return the calculated distance.
+
     var result = camera.getLatestResult();
-    // boolean hasTargets = result.hasTargets();
-    // Get a list of currently tracked targets.
-    // List<PhotonTrackedTarget> targets = result.getTargets();
+    boolean hasTargets = result.hasTargets();
+
     // Get the current best target.
     PhotonTrackedTarget target = result.getBestTarget();
     // Get information from target.
     int targetID = target.getFiducialId();
-    // check if the alliance color is red if so calculate the distance to the
-    // apriltag
-    // with ID 4 because that is the correct tag id for the red speaker
-    if (allianceColor == "red")
-      // Calculate distance to AprilTag with ID 4
-      if (targetID == 4) {
-        double distance = PhotonUtils.calculateDistanceToTargetMeters(0.1, 1.32, 0.0, 0.0);
-        return distance;
-      }
+    if (hasTargets == true) {
+      // check if the alliance color is red if so calculate the distance to the
+      // apriltag
+      // with ID 4 because that is the correct tag id for the red speaker
+      if (allianceColor == "red")
+        // Calculate distance to AprilTag with ID 4
+        if (targetID == 4) {
+          double distance = PhotonUtils.calculateDistanceToTargetMeters(0.1, 1.32, 0.0, 0.0);
+          return distance;
+        }
 
-    // check if the alliance color is blue if so calculate the distance to the
-    // apriltag
-    // with ID 7 because that is the correct tag id for the blue speaker
-    if (allianceColor == "blue")
-      // Calculate distance to AprilTag with ID 7
-      if (targetID == 7) {
-        double distance = PhotonUtils.calculateDistanceToTargetMeters(0.1, 1.32, 0.0, 0.0);
-        return distance;
-      }
-
+      // check if the alliance color is blue if so calculate the distance to the
+      // apriltag
+      // with ID 7 because that is the correct tag id for the blue speaker
+      if (allianceColor == "blue")
+        // Calculate distance to AprilTag with ID 7
+        if (targetID == 7) {
+          double distance = PhotonUtils.calculateDistanceToTargetMeters(0.1, 1.32, 0.0, 0.0);
+          return distance;
+        }
+    }
     // Return default distance if AprilTag ID is not 4 or 7
     return 0.0;
   }
 
   private double calculateDesiredAngle(double distance) {
-    // Replace with your logic to calculate the desired angle based on the distance
-    // For example, you can use a lookup table or a mathematical formula.
-    // Return the calculated desired angle.
-    return 0.0;
+
+    // Example: Linear relationship where desired angle increases as distance
+    // decreases
+    double desiredAngle = 180 - (distance * 10); // Modify the coefficient as needed for tuning
+
+    return desiredAngle;
   }
 }
