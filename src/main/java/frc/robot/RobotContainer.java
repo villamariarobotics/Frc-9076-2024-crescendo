@@ -24,7 +24,7 @@ import frc.robot.commands.EndEffector.ShootingNote;
 import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
-// import frc.robot.subsystems.EndEffectorSubsystem;
+//// import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.PivotLimitSwitchSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -47,11 +47,12 @@ public class RobotContainer {
 
   private Joystick EndEffectorcontroller = new Joystick(1);
   // the a button on the controller
-  // private JoystickButton A_BUTTON = new JoystickButton(EndEffectorcontroller,
-  // 1);
+  //// private JoystickButton A_BUTTON = new JoystickButton(EndEffectorcontroller,1);
+
   private JoystickButton left_bumper = new JoystickButton(EndEffectorcontroller, 5); //! TO CHANGE
   private JoystickButton right_bumper = new JoystickButton(EndEffectorcontroller, 6); //! TO CHANGE
-  private JoystickButton Y_button = new JoystickButton(EndEffectorcontroller, 4); //! TO CHANGE
+  private JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 7); //! TO CHANGE
+  private JoystickButton right_trigger = new JoystickButton(EndEffectorcontroller, 8); //! TO CHANGE
   
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -62,19 +63,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    defaultCommands();
-
+    
     // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                false, true),
-            m_robotDrive));
+    defaultCommands();
   }
 
   /**
@@ -95,12 +86,21 @@ public class RobotContainer {
 
     left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
     right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
-    Y_button.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller));
+    left_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller)); //! TO CHANGE
+    right_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller));
   }
 
   private void defaultCommands() {
     // put commands here that should run by default
     m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
+    m_robotDrive.setDefaultCommand(
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X of the right stick.
+        new RunCommand(() -> m_robotDrive.drive(
+                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                false, true), m_robotDrive));
   }
 
   /**

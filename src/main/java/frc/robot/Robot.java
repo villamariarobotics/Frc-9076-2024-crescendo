@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 // import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +33,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    // Give access to the coprocessor (running Photonvision) by using Port 5800
+    PortForwarder.add(5800, "photonvision.local", 5800);
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();

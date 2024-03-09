@@ -19,7 +19,7 @@ import org.photonvision.PhotonUtils;
 
 public class PivotTurretModeSubsystem extends SubsystemBase {
   private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed); // Change to kBrushed before running
-  private final PhotonCamera camera = new PhotonCamera("CameraName");
+  private final PhotonCamera camera = new PhotonCamera("FrontCamera");
   private AbsoluteEncoder pivotEncoder;
 
   // PID controller for precise positioning
@@ -41,7 +41,7 @@ public class PivotTurretModeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // Get the distance from the AprilTag (replace with your own logic)
-    String allianceColor = SmartDashboard.getString("Alliance Color", "Red");
+    String allianceColor = SmartDashboard.getString("Alliance Color", "N/A");
     double distanceFromAprilTag = getDistanceFromAprilTag(allianceColor);
 
     // Calculate the desired angle based on the distance
