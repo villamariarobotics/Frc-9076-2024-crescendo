@@ -39,10 +39,11 @@ public class Robot extends TimedRobot {
     // Give access to the coprocessor (running Photonvision) by using Port 5800
     PortForwarder.add(5800, "photonvision.local", 5800);
 
-    PowerDistribution m_pdh = new PowerDistribution(1, ModuleType.kRev);
-    double voltage = m_pdh.getVoltage();
+    try (PowerDistribution m_pdh = new PowerDistribution(1, ModuleType.kRev)) {
+      double voltage = m_pdh.getVoltage();
 
-    SmartDashboard.putNumber("Voltage", voltage);
+      SmartDashboard.putNumber("Voltage", voltage);
+    }
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
