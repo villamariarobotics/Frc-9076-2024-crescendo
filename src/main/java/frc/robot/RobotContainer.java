@@ -46,6 +46,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private static SendableChooser<String> m_autoChooser;
+  private static SendableChooser<String> m_DriveModeChooser;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final PivotLimitSwitchSubsystem m_pivotSubsystem = new PivotLimitSwitchSubsystem();
@@ -71,14 +72,18 @@ public class RobotContainer {
     m_autoChooser = new SendableChooser<String>();
     m_autoChooser.setDefaultOption("Shooting Note", null);
     //? Use the Field Map provided on the dashboard to know what the top, bottom, left and right signify
-    m_autoChooser.addOption("Blue Top Auto", "BTA");
-    m_autoChooser.addOption("Blue Middle Auto", "BMA");
-    m_autoChooser.addOption("Blue Bottom Auto", "BBA");
-    m_autoChooser.addOption("Red Top Auto", "RTA"); 
-    m_autoChooser.addOption("Red Middle Auto", "RMA");
-    m_autoChooser.addOption("Red Bottom Auto", "RBA");
+    m_autoChooser.addOption("Top Auto", "TA");
+    m_autoChooser.addOption("Middle Auto", "MA");
+    m_autoChooser.addOption("Bottom Auto", "BA");
 
     SmartDashboard.putData("Auto Selection", m_autoChooser);
+
+    m_DriveModeChooser = new SendableChooser<String>();
+    m_DriveModeChooser.setDefaultOption("Robot-Oriented", "R-O");
+    m_DriveModeChooser.addOption("Field-Oriented", "F-O");
+
+    SmartDashboard.putData("Drive Mode Selection", m_DriveModeChooser);
+    
     
 
 
@@ -100,11 +105,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
+    // Driver Controller - Right Trigger makes wheels go to X-formation
+    new JoystickButton(m_driverController, Button.kR1.value).whileTrue(new RunCommand(() -> m_robotDrive.setX(),m_robotDrive));
 
+    // EndEffector Controller - 4 Buttons Configured
     left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
     right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
     left_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller)); //! TO CHANGE
@@ -114,6 +118,15 @@ public class RobotContainer {
   private void defaultCommands() {
     // put commands here that should run by default
     m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
+    
+    String driveChoice = m_DriveModeChooser.getSelected();
+    
+    boolean selectedDriveMode = switch (driveChoice) {
+      case "F-O" -> true;
+      case "R-O" -> false;
+      default -> true;
+    };
+
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X of the right stick.
@@ -121,7 +134,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                false, true), m_robotDrive));
+                selectedDriveMode, true), m_robotDrive));
   }
 
   /**
@@ -139,17 +152,28 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     Command placeholderCommand = new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller);
+    Command selectedAutoCommand = placeholderCommand; //? Default command
 
-    Command selectedAutoCommand = switch (autoChoice) {
-      case "BTA" -> placeholderCommand; //! CHANGE TO SPECIFIED AUTO COMMAND
-      case "BMA" -> placeholderCommand; //! CHANGE TO SPECIFIED AUTO COMMAND
-      case "BBA" -> placeholderCommand; //! CHANGE TO SPECIFIED AUTO COMMAND
-      case "RTA" -> placeholderCommand; //! CHANGE TO SPECIFIED AUTO COMMAND
-      case "RMA" -> placeholderCommand; //! CHANGE TO SPECIFIED AUTO COMMAND
-      case "RBA" -> placeholderCommand; //! CHANGE TO SPECIFIED AUTO COMMAND 
-      default -> placeholderCommand;
-    }; 
+    switch (SmartDashboard.getString("Alliance Color", "N/A")) {
+      case "Red":
+        switch (autoChoice) {
+          case "TA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO RED TOP AUTO ROUTINE
+          case "MA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO RED MIDDLE AUTO ROUTINE
+          case "BA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO RED BOTTOM AUTO ROUTINE
+        }
+      case "Blue":
+        switch (autoChoice) {
+          case "TA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO BLUE TOP AUTO ROUTINE
+          case "MA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO BLUE MIDDLE AUTO ROUTINE
+          case "BA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO BLUE BOTTOM AUTO ROUTINE
+        }
+      case "N/A":
+        selectedAutoCommand = placeholderCommand; //! CHANGE TO SHOOTING NOTE ONLY COMMAND
+    };
+  
+
     return selectedAutoCommand;
+
     // Create config for trajectory
     ////TrajectoryConfig config = new TrajectoryConfig(
     ////    AutoConstants.kMaxSpeedMetersPerSecond,
