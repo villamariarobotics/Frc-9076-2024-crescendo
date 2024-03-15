@@ -13,6 +13,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
@@ -24,14 +27,20 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.EndEffector.IntakingNote;
 import frc.robot.commands.EndEffector.ShootingNote;
 import frc.robot.commands.Pivot.pivotMoveCommand;
+import frc.robot.commands.Auto.AutoPivotMove;
+import frc.robot.commands.Auto.AutoShootingNote;
+import frc.robot.commands.Auto.AutoIntakeNote;
 import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
 //// import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.PivotLimitSwitchSubsystem;
+import frc.robot.subsystems.PivotSubsystemEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
@@ -49,7 +58,8 @@ public class RobotContainer {
   private static SendableChooser<String> m_DriveModeChooser;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final PivotLimitSwitchSubsystem m_pivotSubsystem = new PivotLimitSwitchSubsystem();
+  private final PivotSubsystemEncoder m_pivotSubsystem = new PivotSubsystemEncoder();
+  private final PivotSubsystemEncoder m_pivotEncoderSubsystem = new PivotSubsystemEncoder(); //! REMEMBER TO CHANGE
   private final EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
 
   private final Joystick EndEffectorcontroller = new Joystick(1);
@@ -144,6 +154,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    
+    String trajectoryJSON = "paths";
+    Trajectory trajectory = new Trajectory();
 
     String autoChoice = m_autoChooser.getSelected();
 
@@ -157,65 +170,46 @@ public class RobotContainer {
     switch (SmartDashboard.getString("Alliance Color", "N/A")) {
       case "Red":
         switch (autoChoice) {
-          case "TA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO RED TOP AUTO ROUTINE
-          case "MA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO RED MIDDLE AUTO ROUTINE
-          case "BA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO RED BOTTOM AUTO ROUTINE
+          case "TA" -> trajectoryJSON = "paths/RedUpPath.wpilib.json";
+          case "MA" -> trajectoryJSON = "paths/RedMiddlePath.wpilib.json";
+          case "BA" -> trajectoryJSON = "paths/RedDownPath.wpilib.json";
         }
       case "Blue":
         switch (autoChoice) {
-          case "TA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO BLUE TOP AUTO ROUTINE
-          case "MA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO BLUE MIDDLE AUTO ROUTINE
-          case "BA" -> selectedAutoCommand = placeholderCommand; //! CHANGE TO BLUE BOTTOM AUTO ROUTINE
+          case "TA" -> trajectoryJSON = "paths/BlueUpPath.wpilib.json";
+          case "MA" -> trajectoryJSON = "paths/BlueMiddlePath.wpilib.json";
+          case "BA" -> trajectoryJSON = "paths/BlueDownPath.wpilib.json";
         }
       case "N/A":
-        selectedAutoCommand = placeholderCommand; //! CHANGE TO SHOOTING NOTE ONLY COMMAND
+        trajectoryJSON = null;
     };
-  
 
-    return selectedAutoCommand;
-
-    // Create config for trajectory
-    ////TrajectoryConfig config = new TrajectoryConfig(
-    ////    AutoConstants.kMaxSpeedMetersPerSecond,
-    ////    AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-    ////    .setKinematics(DriveConstants.kDriveKinematics);
-    
-    // An example trajectory to follow. All units in meters.
-    ////Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        ////new Pose2d(0, 0, new Rotation2d(0)),
-        //// Pass through these two interior waypoints, making an 's' curve path
-        ////List.of(new Translation2d(-1, 0), new Translation2d(-2, 0.1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        ////new Pose2d(-2, 0, new Rotation2d(0)),
-        ////config)
-    // .concatenate(
-    // TrajectoryGenerator.generateTrajectory(
-    // List.of(new Pose2d(3, 0, new Rotation2d(0)), new Pose2d(3, 0, new
-    // Rotation2d(0))),
-    // config))
-
-    ////var thetaController = new ProfiledPIDController(
-    ////    AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    ////thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    ////SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-    ////    exampleTrajectory,
-    ////    m_robotDrive::getPose, // Functional interface to feed supplier
-    ////    DriveConstants.kDriveKinematics,
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+       trajectory,
+       m_robotDrive::getPose, // Functional interface to feed supplier
+       DriveConstants.kDriveKinematics,
 
         // Position controllers
-    ////    new PIDController(AutoConstants.kPXController, 0, 0),
-    ////    new PIDController(AutoConstants.kPYController, 0, 0),
-    ////    thetaController,
-    ////    m_robotDrive::setModuleStates,
-    ////    m_robotDrive);
+       new PIDController(AutoConstants.kPXController, 0, 0),
+       new PIDController(AutoConstants.kPYController, 0, 0),
+       thetaController,
+       m_robotDrive::setModuleStates,
+       m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    ////m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(trajectory.getInitialPose());
+
 
     // Run path following command, then stop at the end.
-    ////return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return new AutoPivotMove(m_pivotEncoderSubsystem, 10).andThen(
+      new AutoShootingNote(m_endEffectorSubsystem).andThen(
+        swerveControllerCommand.andThen(
+          () -> m_robotDrive.drive(0, 0, 0, false, false))));
   }
 }

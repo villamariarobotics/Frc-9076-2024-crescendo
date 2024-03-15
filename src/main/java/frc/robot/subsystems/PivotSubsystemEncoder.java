@@ -20,6 +20,7 @@ public class PivotSubsystemEncoder extends SubsystemBase {
      * Creates a new PivotSubsystem.
      */
     public PivotSubsystemEncoder() {
+        
         pivotMotor.restoreFactoryDefaults();
         pivotMotor.setInverted(false);
 
@@ -38,13 +39,16 @@ public class PivotSubsystemEncoder extends SubsystemBase {
 
         // Limit speed to prevent overshoot
         speed = Math.max(-1, Math.min(speed, 1));
-
-        setPivotSpeed(speed);
-    }
-
-    public void setPivotSpeed(double speed) {
+        
         pivotMotor.set(speed);
+
     }
+
+    public void setMotorSpeed(double speed) {
+        
+        pivotMotor.set(speed); //! PUT ENCODER LIMITING CODE
+    }
+    
 
     public double getPivotPosition() {
         return pivotEncoder.getPosition();
@@ -56,7 +60,10 @@ public class PivotSubsystemEncoder extends SubsystemBase {
      * @param targetAngle The desired angle in degrees.
      */
     public void moveMotorToAngle(double targetAngle) {
-        pidController.setSetpoint(targetAngle);
+        ////pidController.setSetpoint(targetAngle);
+        double error = pivotEncoder.getPosition() - targetAngle;
+
+        pivotMotor.set(error*0.00464159);
     }
 
     public void stop() {
