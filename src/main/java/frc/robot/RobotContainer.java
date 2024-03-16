@@ -26,6 +26,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.EndEffector.IntakingNote;
 import frc.robot.commands.EndEffector.ShootingNote;
+import frc.robot.commands.Pivot.PivotGoToAmpPositionCommandencoder;
+import frc.robot.commands.Pivot.PivotGoToIntakePositionCommandencoder;
+import frc.robot.commands.Pivot.PivotGoToSpeakerPositionCommandencoder;
 import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.commands.Auto.AutoPivotMove;
 import frc.robot.commands.Auto.AutoShootingNote;
@@ -59,17 +62,20 @@ public class RobotContainer {
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final PivotSubsystemEncoder m_pivotSubsystem = new PivotSubsystemEncoder();
-  private final PivotSubsystemEncoder m_pivotEncoderSubsystem = new PivotSubsystemEncoder(); //! REMEMBER TO CHANGE
   private final EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
 
   private final Joystick EndEffectorcontroller = new Joystick(1);
   // the a button on the controller
   //// private JoystickButton A_BUTTON = new JoystickButton(EndEffectorcontroller,1);
 
-  private final JoystickButton left_bumper = new JoystickButton(EndEffectorcontroller, 5); //! TO CHANGE
-  private final JoystickButton right_bumper = new JoystickButton(EndEffectorcontroller, 6); //! TO CHANGE
-  private final JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 7); //! TO CHANGE
-  private final JoystickButton right_trigger = new JoystickButton(EndEffectorcontroller, 8); //! TO CHANGE
+  private final JoystickButton blue_button = new JoystickButton(EndEffectorcontroller, 1);
+  private final JoystickButton green_button = new JoystickButton(EndEffectorcontroller, 2);
+  private final JoystickButton red_button = new JoystickButton(EndEffectorcontroller, 3);
+  private final JoystickButton yellow_button = new JoystickButton(EndEffectorcontroller, 4);
+  private final JoystickButton left_bumper = new JoystickButton(EndEffectorcontroller, 5);
+  private final JoystickButton right_bumper = new JoystickButton(EndEffectorcontroller, 6);
+  private final JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 7);
+  private final JoystickButton right_trigger = new JoystickButton(EndEffectorcontroller, 8);
   
   // The driver's controller
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -78,7 +84,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Getting Autonomous Routine from SmartDashboard
+    
+    // Getting Autonomous Routine from Driver Station
     m_autoChooser = new SendableChooser<String>();
     m_autoChooser.setDefaultOption("Shooting Note", null);
     //? Use the Field Map provided on the dashboard to know what the top, bottom, left and right signify
@@ -88,20 +95,28 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Selection", m_autoChooser);
 
+    // Getting Drive Mode from Driver Station
     m_DriveModeChooser = new SendableChooser<String>();
     m_DriveModeChooser.setDefaultOption("Robot-Oriented", "R-O");
     m_DriveModeChooser.addOption("Field-Oriented", "F-O");
 
     SmartDashboard.putData("Drive Mode Selection", m_DriveModeChooser);
     
+    // put commands here that should run by default
     
-
-
+    
+    String driveChoice = m_DriveModeChooser.getSelected();
+    
+    boolean selectedDriveMode = switch (driveChoice) {
+      case "F-O" -> true;
+      case "R-O" -> false;
+      default -> true;
+    };
     // Configure the button bindings
     configureButtonBindings();
     
     // Configure default commands
-    defaultCommands();
+    defaultCommands(selectedDriveMode);
   }
 
   /**
@@ -118,25 +133,21 @@ public class RobotContainer {
     // Driver Controller - Right Trigger makes wheels go to X-formation
     new JoystickButton(m_driverController, Button.kR1.value).whileTrue(new RunCommand(() -> m_robotDrive.setX(),m_robotDrive));
 
-    // EndEffector Controller - 4 Buttons Configured
+    // EndEffector Controller - 8 Buttons Configured
+    blue_button.whileTrue(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
+    green_button.onTrue(new PivotGoToIntakePositionCommandencoder(m_pivotSubsystem));
+    red_button.onTrue(new PivotGoToAmpPositionCommandencoder(m_pivotSubsystem));
+    yellow_button.onTrue(new PivotGoToSpeakerPositionCommandencoder(m_pivotSubsystem));
     left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
     right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
     left_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller)); //! TO CHANGE
     right_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller));
   }
 
-  private void defaultCommands() {
-    // put commands here that should run by default
-    m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
+  private void defaultCommands(boolean driveMode) {
     
-    String driveChoice = m_DriveModeChooser.getSelected();
+    ////m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
     
-    boolean selectedDriveMode = switch (driveChoice) {
-      case "F-O" -> true;
-      case "R-O" -> false;
-      default -> true;
-    };
-
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X of the right stick.
@@ -144,7 +155,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                selectedDriveMode, true), m_robotDrive));
+                driveMode, true), m_robotDrive));
   }
 
   /**
@@ -163,9 +174,6 @@ public class RobotContainer {
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    Command placeholderCommand = new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller);
-    Command selectedAutoCommand = placeholderCommand; //? Default command
 
     switch (SmartDashboard.getString("Alliance Color", "N/A")) {
       case "Red":
@@ -207,9 +215,10 @@ public class RobotContainer {
 
 
     // Run path following command, then stop at the end.
-    return new AutoPivotMove(m_pivotEncoderSubsystem, 10).andThen(
+    return new AutoPivotMove(m_pivotSubsystem, 10).andThen(
       new AutoShootingNote(m_endEffectorSubsystem).andThen(
-        swerveControllerCommand.andThen(
-          () -> m_robotDrive.drive(0, 0, 0, false, false))));
+        new AutoPivotMove(m_pivotSubsystem, 10). andThen(
+          swerveControllerCommand.andThen(
+            () -> m_robotDrive.drive(0, 0, 0, false, false)))));
   }
 }

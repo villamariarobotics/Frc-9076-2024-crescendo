@@ -15,11 +15,15 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   /** Creates a new EndEffectorSubsystem. */
   public EndEffectorSubsystem() {
+  
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setInverted(true);
+    intakeMotor.burnFlash();
 
     shooterMotor.restoreFactoryDefaults();
     shooterMotor.setInverted(true);
+    shooterMotor.burnFlash();
+
   }
 
   @Override
