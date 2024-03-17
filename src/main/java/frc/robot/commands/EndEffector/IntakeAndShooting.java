@@ -15,17 +15,17 @@ public class IntakeAndShooting extends Command {
   double intakeSpeed;
 
   /** Creates a new Note intaking and shooting command. */
-  public IntakeAndShooting(EndEffectorSubsystem endeffector, Joystick con) {
+  public IntakeAndShooting(EndEffectorSubsystem endeffector, Joystick con, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_EndEffectorSubsystem = endeffector;
     this.controller = con;
+    this.shooterSpeed = speed;
     addRequirements(m_EndEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSpeed = 1;
     m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
   }
 

@@ -138,9 +138,9 @@ public class RobotContainer {
     green_button.onTrue(new PivotGoToIntakePositionCommandencoder(m_pivotSubsystem));
     red_button.onTrue(new PivotGoToAmpPositionCommandencoder(m_pivotSubsystem));
     yellow_button.onTrue(new PivotGoToSpeakerPositionCommandencoder(m_pivotSubsystem));
-    left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller));
+    left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 0.5));
     right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
-    left_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller)); //! TO CHANGE
+    left_trigger.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 1));
     right_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller));
   }
 

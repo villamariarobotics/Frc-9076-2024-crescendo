@@ -56,7 +56,7 @@ public class PivotSubsystemEncoder extends SubsystemBase {
         
         pivotMotor.set(speed);
     }
-    
+
     public void setMotorSpeed(double speed) {
         if (upperLimitSwitch.get() || lowerLimitSwitch.get()){
             if (speed > 0) {
