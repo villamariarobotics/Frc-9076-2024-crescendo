@@ -45,5 +45,6 @@
     "testpivotcomand",
     "wpilib",
     "wpilibj"
-  ]
+  ],
+  "java.debug.settings.onBuildFailureProceed": true
 }

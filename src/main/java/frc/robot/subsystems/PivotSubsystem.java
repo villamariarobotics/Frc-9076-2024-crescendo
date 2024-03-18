@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @SuppressWarnings("unused")
-public class PivotSubsystemEncoder extends SubsystemBase {
+public class PivotSubsystem extends SubsystemBase {
 
     private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed); // ! Change to kBrushed before running
     private AbsoluteEncoder pivotEncoder;
@@ -27,7 +27,7 @@ public class PivotSubsystemEncoder extends SubsystemBase {
     /**
      * Creates a new PivotSubsystem.
      */
-    public PivotSubsystemEncoder() {
+    public PivotSubsystem() {
         
         upperLimitSwitch = new DigitalInput(1);
         lowerLimitSwitch = new DigitalInput(0);

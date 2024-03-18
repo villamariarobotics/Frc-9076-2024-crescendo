@@ -5,16 +5,16 @@
 package frc.robot.commands.Auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotSubsystemEncoder;
+import frc.robot.subsystems.PivotSubsystem;
 
 public class AutoPivotMove extends Command {
 
-  private PivotSubsystemEncoder m_pivotSubsystem;
+  private PivotSubsystem m_pivotSubsystem;
 
   double target_angle;
 
   /** Creates a new PivotGoToAmpPosition. */
-  public AutoPivotMove(PivotSubsystemEncoder m_pivotSubsystem, double target_angle) {
+  public AutoPivotMove(PivotSubsystem m_pivotSubsystem, double target_angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = m_pivotSubsystem;
     this.target_angle = target_angle;

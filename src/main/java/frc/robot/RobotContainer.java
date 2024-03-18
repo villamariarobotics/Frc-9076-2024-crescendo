@@ -36,7 +36,7 @@ import frc.robot.commands.Auto.AutoIntakeNote;
 import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
 //// import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.PivotSubsystemEncoder;
+import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -61,7 +61,7 @@ public class RobotContainer {
   private static SendableChooser<String> m_DriveModeChooser;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final PivotSubsystemEncoder m_pivotSubsystem = new PivotSubsystemEncoder();
+  private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
   private final EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
 
   private final Joystick EndEffectorcontroller = new Joystick(1);
