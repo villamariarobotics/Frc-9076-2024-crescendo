@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @SuppressWarnings("unused")
 public class PivotSubsystem extends SubsystemBase {
 
-    private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed); // ! Change to kBrushed before running
+    private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushless); // ! Change to kBrushed before running
     private AbsoluteEncoder pivotEncoder;
 
     double targetAngle;
@@ -54,13 +54,13 @@ public class PivotSubsystem extends SubsystemBase {
         // Limit speed to prevent overshoot
         speed = Math.max(-1, Math.min(speed, 1));
         
-        pivotMotor.set(speed);
+        ////pivotMotor.set(speed);
     }
 
     public void setMotorSpeed(double speed) {
-        if (upperLimitSwitch.get() || lowerLimitSwitch.get()){
+        ////if (upperLimitSwitch.get() || lowerLimitSwitch.get()){
             if (speed > 0) {
-                if (upperLimitSwitch.get()) {
+                if (lowerLimitSwitch.get()) {
                   // We are going up and top limit is tripped so stop
                   pivotMotor.set(0);
                 } else {
@@ -68,7 +68,7 @@ public class PivotSubsystem extends SubsystemBase {
                   pivotMotor.set(speed);
                 }
             } else {
-                if (lowerLimitSwitch.get()) {
+                if (upperLimitSwitch.get()) {
                   // We are going down and bottom limit is tripped so stop
                   pivotMotor.set(0);
                 } else {
@@ -76,21 +76,21 @@ public class PivotSubsystem extends SubsystemBase {
                   pivotMotor.set(speed);
                 }
             }
-        } else {
-            if (speed < 0) {
-                if (pivotEncoder.getPosition() >= 90) {
-                    pivotMotor.set(0);
-                } else {
-                    pivotMotor.set(speed);
-                }
-            } else {
-                if (pivotEncoder.getPosition() >= 0) {
-                    pivotMotor.set(0);
-                } else {
-                    pivotMotor.set(speed);;
-                }
-            }
-        }
+        ////} else {
+        ////    if (speed < 0) {
+        ////        if (pivotEncoder.getPosition() >= 90) {
+        ////            pivotMotor.set(0);
+        ////        } else {
+        ////            pivotMotor.set(speed);
+        ////        }
+        ////    } else {
+        ////        if (pivotEncoder.getPosition() >= 0) {
+        ////            pivotMotor.set(0);
+        ////        } else {
+        ////            pivotMotor.set(speed);;
+        ////        }
+        ////    }
+        ////}
     }
     
 

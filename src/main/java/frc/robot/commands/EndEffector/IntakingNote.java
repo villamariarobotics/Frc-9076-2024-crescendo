@@ -18,7 +18,7 @@ public class IntakingNote extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_EndEffectorSubsystem = intake;
     this.controller = con;
-    addRequirements(m_EndEffectorSubsystem);
+    //// addRequirements(m_EndEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.

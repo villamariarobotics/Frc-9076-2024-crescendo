@@ -17,7 +17,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   public EndEffectorSubsystem() {
   
     intakeMotor.restoreFactoryDefaults();
-    intakeMotor.setInverted(true);
+    intakeMotor.setInverted(false);
     intakeMotor.burnFlash();
 
     shooterMotor.restoreFactoryDefaults();

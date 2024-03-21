@@ -20,7 +20,7 @@ public class IntakeAndShooting extends Command {
     this.m_EndEffectorSubsystem = endeffector;
     this.controller = con;
     this.shooterSpeed = speed;
-    addRequirements(m_EndEffectorSubsystem);
+    //// addRequirements(m_EndEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.

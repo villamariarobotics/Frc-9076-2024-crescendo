@@ -57,7 +57,7 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private static SendableChooser<String> m_autoChooser;
+  private final SendableChooser<String> m_autoChooser;
   private static SendableChooser<String> m_DriveModeChooser;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
