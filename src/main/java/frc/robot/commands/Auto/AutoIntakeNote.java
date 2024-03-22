@@ -31,11 +31,11 @@ public class AutoIntakeNote extends Command {
     m_EndEffectorSubsystem.setIntakeSpeed(intakespeed);
   }
 
+  // Called once the command ends or is interrupted.
   public void end(boolean interrupted) {
     m_EndEffectorSubsystem.setIntakeSpeed(0);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public boolean isFinished() {
     return false;

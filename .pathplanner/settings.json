@@ -7,7 +7,7 @@
     "Blue Alliance",
     "Red Alliance"
   ],
-  "defaultMaxVel": 2.75,
+  "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

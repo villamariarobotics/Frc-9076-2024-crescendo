@@ -26,17 +26,17 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.EndEffector.IntakingNote;
 import frc.robot.commands.EndEffector.ShootingNote;
-import frc.robot.commands.Pivot.PivotGoToAmpPositionCommandencoder;
-import frc.robot.commands.Pivot.PivotGoToIntakePositionCommandencoder;
-import frc.robot.commands.Pivot.PivotGoToSpeakerPositionCommandencoder;
+import frc.robot.commands.Pivot.PivotGoToAmpPositionCommand;
+import frc.robot.commands.Pivot.PivotGoToIntakePositionCommand;
+import frc.robot.commands.Pivot.PivotGoToSpeakerPositionCommand;
+import frc.robot.commands.Pivot.PivotGoToIntakePositionCommand;
 import frc.robot.commands.Pivot.pivotMoveCommand;
-import frc.robot.commands.Auto.AutoPivotMove;
 import frc.robot.commands.Auto.AutoShootingNote;
 import frc.robot.commands.Auto.AutoIntakeNote;
 import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
 //// import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotManualSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -45,7 +45,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+
+import com.pathplanner.lib.auto.NamedCommands;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.PivotEncoderSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -60,8 +66,11 @@ public class RobotContainer {
   private final SendableChooser<String> m_autoChooser;
   private static SendableChooser<String> m_DriveModeChooser;
 
+  private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed);
+
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
+  private final PivotManualSubsystem m_pivotManualSubsystem = new PivotManualSubsystem(pivotMotor);
+  private final PivotEncoderSubsystem m_pivotEncoderSubsystem = new PivotEncoderSubsystem(pivotMotor);
   private final EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
 
   private final Joystick EndEffectorcontroller = new Joystick(1);
@@ -134,10 +143,10 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kR1.value).whileTrue(new RunCommand(() -> m_robotDrive.setX(),m_robotDrive));
 
     // EndEffector Controller - 8 Buttons Configured
-    blue_button.whileTrue(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
-    green_button.onTrue(new PivotGoToIntakePositionCommandencoder(m_pivotSubsystem));
-    red_button.onTrue(new PivotGoToAmpPositionCommandencoder(m_pivotSubsystem));
-    yellow_button.onTrue(new PivotGoToSpeakerPositionCommandencoder(m_pivotSubsystem));
+    blue_button.whileTrue(new pivotMoveCommand(m_pivotManualSubsystem, EndEffectorcontroller));
+    green_button.onTrue(new PivotGoToIntakePositionCommand(m_pivotEncoderSubsystem));
+    red_button.onTrue(new PivotGoToAmpPositionCommand(m_pivotEncoderSubsystem));
+    yellow_button.onTrue(new PivotGoToSpeakerPositionCommand(m_pivotEncoderSubsystem));
     left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 0.5));
     right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
     left_trigger.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 1));
@@ -158,6 +167,15 @@ public class RobotContainer {
                 driveMode, true), m_robotDrive));
   }
 
+
+
+  private void configureAutoCommands() {
+    NamedCommands.registerCommand("GoToIntakePosition", new PivotGoToIntakePositionCommand(m_pivotEncoderSubsystem));
+    NamedCommands.registerCommand("GoToSpeakerPosition", new PivotGoToIntakePositionCommand(m_pivotEncoderSubsystem));
+    NamedCommands.registerCommand("GoToAmpPosition", new PivotGoToAmpPositionCommand(m_pivotEncoderSubsystem));
+
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -166,59 +184,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     
-    String trajectoryJSON = "paths";
-    Trajectory trajectory = new Trajectory();
-
-    String autoChoice = m_autoChooser.getSelected();
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    switch (SmartDashboard.getString("Alliance Color", "N/A")) {
-      case "Red":
-        switch (autoChoice) {
-          case "TA" -> trajectoryJSON = "paths/RedUpPath.wpilib.json";
-          case "MA" -> trajectoryJSON = "paths/RedMiddlePath.wpilib.json";
-          case "BA" -> trajectoryJSON = "paths/RedDownPath.wpilib.json";
-        }
-      case "Blue":
-        switch (autoChoice) {
-          case "TA" -> trajectoryJSON = "paths/BlueUpPath.wpilib.json";
-          case "MA" -> trajectoryJSON = "paths/BlueMiddlePath.wpilib.json";
-          case "BA" -> trajectoryJSON = "paths/BlueDownPath.wpilib.json";
-        }
-      case "N/A":
-        trajectoryJSON = null;
-    };
-
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-       trajectory,
-       m_robotDrive::getPose, // Functional interface to feed supplier
-       DriveConstants.kDriveKinematics,
-
-        // Position controllers
-       new PIDController(AutoConstants.kPXController, 0, 0),
-       new PIDController(AutoConstants.kPYController, 0, 0),
-       thetaController,
-       m_robotDrive::setModuleStates,
-       m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(trajectory.getInitialPose());
-
-
     // Run path following command, then stop at the end.
-    return new AutoPivotMove(m_pivotSubsystem, 10).andThen(
+    return new PivotGoToSpeakerPositionCommand(m_pivotEncoderSubsystem).andThen(
       new AutoShootingNote(m_endEffectorSubsystem).andThen(
-        new AutoPivotMove(m_pivotSubsystem, 10). andThen(
-          swerveControllerCommand.andThen(
-            () -> m_robotDrive.drive(0, 0, 0, false, false)))));
+        new PivotGoToAmpPositionCommand(m_pivotEncoderSubsystem)));
   }
 }

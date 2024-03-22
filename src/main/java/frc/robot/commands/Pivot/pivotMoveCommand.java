@@ -6,15 +6,15 @@ package frc.robot.commands.Pivot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotManualSubsystem;
 
 public class pivotMoveCommand extends Command {
-  private PivotSubsystem m_pivotSubsystem;
+  private PivotManualSubsystem m_pivotSubsystem;
   private Joystick controller;
   double pivotSpeed;
 
   /** Creates a new PivotTestCommand. */
-  public pivotMoveCommand(PivotSubsystem pivot, Joystick con) {
+  public pivotMoveCommand(PivotManualSubsystem pivot, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = pivot;
     this.controller = con;

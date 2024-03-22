@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "GoToSpeakerPosition"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "G"
           }
         },
         {
@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": null
+                  "name": "GoToAmpPosition"
                 }
               }
             ]

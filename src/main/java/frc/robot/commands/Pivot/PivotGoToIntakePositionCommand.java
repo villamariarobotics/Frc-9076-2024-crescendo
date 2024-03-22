@@ -5,16 +5,16 @@
 package frc.robot.commands.Pivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotEncoderSubsystem;
 
-public class PivotGoToAmpPositionCommandencoder extends Command {
+public class PivotGoToIntakePositionCommand extends Command {
 
-  private PivotSubsystem m_pivotSubsystem;
+  private PivotEncoderSubsystem m_pivotSubsystem;
+  
+  double target_angle = 10; // ! Change this to the desired angle
 
-  double target_angle = 90; // ! Change this to the desired angle
-
-  /** Creates a new PivotGoToAmpPosition. */
-  public PivotGoToAmpPositionCommandencoder(PivotSubsystem pivot) {
+  /** Creates a new PivotGoToSpeakerPositionCommand. */
+  public PivotGoToIntakePositionCommand(PivotEncoderSubsystem pivot) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = pivot;
     addRequirements(m_pivotSubsystem);
@@ -29,7 +29,7 @@ public class PivotGoToAmpPositionCommandencoder extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_pivotSubsystem.moveMotorToAngle(target_angle);
+    m_pivotSubsystem.returnMotorSpeedFromAngle(target_angle);
   }
 
   // Called once the command ends or is interrupted.

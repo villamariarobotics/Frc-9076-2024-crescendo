@@ -13,6 +13,7 @@ public class AutoShootingNote extends Command {
 
   double shooterSpeed;
   double intakeSpeed;
+  long startTime;
 
   /** Creates a new Note intaking and shooting command. */
   public AutoShootingNote(EndEffectorSubsystem endeffector) {
@@ -26,6 +27,7 @@ public class AutoShootingNote extends Command {
   public void initialize() {
     shooterSpeed = 0.5;
     intakeSpeed = 1;
+    startTime = System.currentTimeMillis();
 
     m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
   }
@@ -33,8 +35,10 @@ public class AutoShootingNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    m_EndEffectorSubsystem.setIntakeSpeed(intakeSpeed);
+
+    if (System.currentTimeMillis() - startTime > 2000) {
+      m_EndEffectorSubsystem.setIntakeSpeed(intakeSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -47,6 +51,6 @@ public class AutoShootingNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return System.currentTimeMillis() - startTime > 4000;
   }
 }
