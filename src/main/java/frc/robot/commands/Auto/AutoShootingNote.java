@@ -9,15 +9,16 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class AutoShootingNote extends Command {
   
-    private EndEffectorSubsystem m_EndEffectorSubsystem;
+  private EndEffectorSubsystem m_EndEffectorSubsystem;
 
   double shooterSpeed;
   double intakeSpeed;
   long startTime;
 
   /** Creates a new Note intaking and shooting command. */
-  public AutoShootingNote(EndEffectorSubsystem endeffector) {
+  public AutoShootingNote(EndEffectorSubsystem endeffector, double shooterSpeed) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.shooterSpeed = shooterSpeed;
     this.m_EndEffectorSubsystem = endeffector;
     addRequirements(m_EndEffectorSubsystem);
   }
@@ -25,16 +26,14 @@ public class AutoShootingNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSpeed = 0.5;
-    intakeSpeed = 1;
+    intakeSpeed = -1;
     startTime = System.currentTimeMillis();
-
-    m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_EndEffectorSubsystem.setShooterSpeed(shooterSpeed);
 
     if (System.currentTimeMillis() - startTime > 2000) {
       m_EndEffectorSubsystem.setIntakeSpeed(intakeSpeed);
@@ -44,13 +43,12 @@ public class AutoShootingNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_EndEffectorSubsystem.setShooterSpeed(0);
-    m_EndEffectorSubsystem.setIntakeSpeed(0);
+    m_EndEffectorSubsystem.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return System.currentTimeMillis() - startTime > 4000;
+    return System.currentTimeMillis() - startTime > 3000;
   }
 }

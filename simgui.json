@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "SPARK MAX [14]": {
+        "header": {
+          "open": true
+        }
+      },
       "SPARK MAX [2]": {
         "header": {
           "open": true
@@ -11,6 +16,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auto Selection": "String Chooser",
       "/SmartDashboard/Drive Mode Selection": "String Chooser",
       "/SmartDashboard/Field": "Field2d"

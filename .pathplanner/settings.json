@@ -4,10 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [],
   "autoFolders": [
-    "Blue Alliance",
-    "Red Alliance"
+    "[1]",
+    "[2]",
+    "[3]",
+    "Misc"
   ],
-  "defaultMaxVel": 3.0,
+  "defaultMaxVel": 2.75,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

@@ -9,9 +9,9 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class EndEffectorSubsystem extends SubsystemBase {
-
-  private CANSparkMax intakeMotor = new CANSparkMax(8, CANSparkMax.MotorType.kBrushless);
+  
   private CANSparkMax shooterMotor = new CANSparkMax(7, CANSparkMax.MotorType.kBrushless);
+  private CANSparkMax intakeMotor = new CANSparkMax(8, CANSparkMax.MotorType.kBrushless);
 
   /** Creates a new EndEffectorSubsystem. */
   public EndEffectorSubsystem() {

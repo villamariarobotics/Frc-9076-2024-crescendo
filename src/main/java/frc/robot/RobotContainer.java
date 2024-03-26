@@ -29,14 +29,13 @@ import frc.robot.commands.EndEffector.ShootingNote;
 import frc.robot.commands.Pivot.PivotGoToAmpPositionCommand;
 import frc.robot.commands.Pivot.PivotGoToIntakePositionCommand;
 import frc.robot.commands.Pivot.PivotGoToSpeakerPositionCommand;
-import frc.robot.commands.Pivot.PivotGoToIntakePositionCommand;
 import frc.robot.commands.Pivot.pivotMoveCommand;
 import frc.robot.commands.Auto.AutoShootingNote;
 import frc.robot.commands.Auto.AutoIntakeNote;
 import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
 //// import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.PivotManualSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -46,12 +45,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.PivotEncoderSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -63,20 +61,15 @@ import frc.robot.subsystems.PivotEncoderSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final SendableChooser<String> m_autoChooser;
-  private static SendableChooser<String> m_DriveModeChooser;
-
-  private CANSparkMax pivotMotor = new CANSparkMax(14, MotorType.kBrushed);
+  private final SendableChooser<Command> m_autoChooser;
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final PivotManualSubsystem m_pivotManualSubsystem = new PivotManualSubsystem(pivotMotor);
-  private final PivotEncoderSubsystem m_pivotEncoderSubsystem = new PivotEncoderSubsystem(pivotMotor);
+  private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
   private final EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
-
+  
+  private final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   private final Joystick EndEffectorcontroller = new Joystick(1);
-  // the a button on the controller
-  //// private JoystickButton A_BUTTON = new JoystickButton(EndEffectorcontroller,1);
-
+  
   private final JoystickButton blue_button = new JoystickButton(EndEffectorcontroller, 1);
   private final JoystickButton green_button = new JoystickButton(EndEffectorcontroller, 2);
   private final JoystickButton red_button = new JoystickButton(EndEffectorcontroller, 3);
@@ -86,46 +79,27 @@ public class RobotContainer {
   private final JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 7);
   private final JoystickButton right_trigger = new JoystickButton(EndEffectorcontroller, 8);
   
-  // The driver's controller
-  private final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    
-    // Getting Autonomous Routine from Driver Station
-    m_autoChooser = new SendableChooser<String>();
-    m_autoChooser.setDefaultOption("Shooting Note", null);
-    //? Use the Field Map provided on the dashboard to know what the top, bottom, left and right signify
-    m_autoChooser.addOption("Top Auto", "TA");
-    m_autoChooser.addOption("Middle Auto", "MA");
-    m_autoChooser.addOption("Bottom Auto", "BA");
 
-    SmartDashboard.putData("Auto Selection", m_autoChooser);
+    NamedCommands.registerCommand("GoToSpeakerPosition", new PivotGoToSpeakerPositionCommand(m_pivotSubsystem));
+    NamedCommands.registerCommand("GoToAmpPosition", new PivotGoToAmpPositionCommand(m_pivotSubsystem));
+    NamedCommands.registerCommand("GoToIntakePosition", new PivotGoToIntakePositionCommand(m_pivotSubsystem));
+    NamedCommands.registerCommand("Shoot Note Full Speed", new AutoShootingNote(m_endEffectorSubsystem, 1));
+    NamedCommands.registerCommand("Shoot Note Half Speed", new AutoShootingNote(m_endEffectorSubsystem, 0.65)); //TODO Change shooterSpeed
+    NamedCommands.registerCommand("Intake Note", new AutoIntakeNote(m_endEffectorSubsystem));
 
-    // Getting Drive Mode from Driver Station
-    m_DriveModeChooser = new SendableChooser<String>();
-    m_DriveModeChooser.setDefaultOption("Robot-Oriented", "R-O");
-    m_DriveModeChooser.addOption("Field-Oriented", "F-O");
+    m_autoChooser = AutoBuilder.buildAutoChooser();
+    
+    SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
-    SmartDashboard.putData("Drive Mode Selection", m_DriveModeChooser);
-    
-    // put commands here that should run by default
-    
-    
-    String driveChoice = m_DriveModeChooser.getSelected();
-    
-    boolean selectedDriveMode = switch (driveChoice) {
-      case "F-O" -> true;
-      case "R-O" -> false;
-      default -> true;
-    };
     // Configure the button bindings
     configureButtonBindings();
     
     // Configure default commands
-    defaultCommands(selectedDriveMode);
+    defaultCommands();
   }
 
   /**
@@ -143,37 +117,35 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kR1.value).whileTrue(new RunCommand(() -> m_robotDrive.setX(),m_robotDrive));
 
     // EndEffector Controller - 8 Buttons Configured
-    blue_button.whileTrue(new pivotMoveCommand(m_pivotManualSubsystem, EndEffectorcontroller));
-    green_button.onTrue(new PivotGoToIntakePositionCommand(m_pivotEncoderSubsystem));
-    red_button.onTrue(new PivotGoToAmpPositionCommand(m_pivotEncoderSubsystem));
-    yellow_button.onTrue(new PivotGoToSpeakerPositionCommand(m_pivotEncoderSubsystem));
-    left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 0.5));
+    blue_button.whileTrue(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
+    green_button.onTrue(new PivotGoToIntakePositionCommand(m_pivotSubsystem));
+    red_button.onTrue(new PivotGoToAmpPositionCommand(m_pivotSubsystem));
+    yellow_button.onTrue(new PivotGoToSpeakerPositionCommand(m_pivotSubsystem));
+    left_bumper.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 0.65));
     right_bumper.whileTrue(new IntakingNote(m_endEffectorSubsystem, EndEffectorcontroller));
     left_trigger.whileTrue(new IntakeAndShooting(m_endEffectorSubsystem, EndEffectorcontroller, 1));
     right_trigger.whileTrue(new ShootingNote(m_endEffectorSubsystem, EndEffectorcontroller));
   }
 
-  private void defaultCommands(boolean driveMode) {
-    
-    ////m_pivotSubsystem.setDefaultCommand(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
-    
+  private void defaultCommands() {
+
     m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X of the right stick.
-        new RunCommand(() -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                driveMode, true), m_robotDrive));
-  }
-
-
-
-  private void configureAutoCommands() {
-    NamedCommands.registerCommand("GoToIntakePosition", new PivotGoToIntakePositionCommand(m_pivotEncoderSubsystem));
-    NamedCommands.registerCommand("GoToSpeakerPosition", new PivotGoToIntakePositionCommand(m_pivotEncoderSubsystem));
-    NamedCommands.registerCommand("GoToAmpPosition", new PivotGoToAmpPositionCommand(m_pivotEncoderSubsystem));
-
+        new RunCommand(() -> {
+          if (m_driverController.getAButton()) {
+            m_robotDrive.drive(
+                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftY())*Math.pow(m_driverController.getLeftY(),2), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftX())*Math.pow(m_driverController.getLeftX(),2), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband((m_driverController.getRightX() + m_driverController.getRightTriggerAxis() - m_driverController.getLeftTriggerAxis()) * 1, OIConstants.kDriveDeadband),
+            false, true);
+        } else {
+            m_robotDrive.drive(
+                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftY())*Math.pow(m_driverController.getLeftY(),2) * 0.5, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftX())*Math.pow(m_driverController.getLeftX(),2) * 0.5, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband((m_driverController.getRightX() + m_driverController.getRightTriggerAxis() - m_driverController.getLeftTriggerAxis()) * 1, OIConstants.kDriveDeadband),
+            false, true);
+        }
+        }, m_robotDrive));
+    
   }
 
   /**
@@ -183,10 +155,14 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    
-    // Run path following command, then stop at the end.
-    return new PivotGoToSpeakerPositionCommand(m_pivotEncoderSubsystem).andThen(
-      new AutoShootingNote(m_endEffectorSubsystem).andThen(
-        new PivotGoToAmpPositionCommand(m_pivotEncoderSubsystem)));
+    Command autoCommand = m_autoChooser.getSelected();
+      autoCommand.addRequirements(m_robotDrive, m_pivotSubsystem, m_endEffectorSubsystem);
+    return autoCommand;
+
+    // return new PivotGoToSpeakerPositionCommand(m_pivotSubsystem).andThen(
+    //   new AutoShootingNote(m_endEffectorSubsystem).andThen(
+    //     new PivotGoToAmpPositionCommand(m_pivotSubsystem)
+    //   )
+    // );
   }
 }

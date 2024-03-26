@@ -6,15 +6,15 @@ package frc.robot.commands.Pivot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotManualSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 
 public class pivotMoveCommand extends Command {
-  private PivotManualSubsystem m_pivotSubsystem;
+  private PivotSubsystem m_pivotSubsystem;
   private Joystick controller;
   double pivotSpeed;
 
   /** Creates a new PivotTestCommand. */
-  public pivotMoveCommand(PivotManualSubsystem pivot, Joystick con) {
+  public pivotMoveCommand(PivotSubsystem pivot, Joystick con) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_pivotSubsystem = pivot;
     this.controller = con;
@@ -30,8 +30,7 @@ public class pivotMoveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    pivotSpeed = (controller.getRawAxis(1)); // y axis (hopefully)
+    pivotSpeed = controller.getRawAxis(1);
     m_pivotSubsystem.setMotorSpeed(pivotSpeed);
   }
 

@@ -1,0 +1,94 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.8448339118900462,
+      "y": 6.655801089379956
+    },
+    "rotation": -119.21924669048462
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToSpeakerPosition"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note Half Speed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToIntakePosition"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Sub1 to Note1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note1 to Sub1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "GoToSpeakerPosition"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Note Half Speed"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "GoToAmpPosition"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "[1]",
+  "choreoAuto": false
+}

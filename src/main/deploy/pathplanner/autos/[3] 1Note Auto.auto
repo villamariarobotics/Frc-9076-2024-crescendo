@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 15.253859396607684,
-      "y": 5.572630034148957
+      "x": 0.7878249089831516,
+      "y": 4.475206728191234
     },
-    "rotation": 0
+    "rotation": 119.19748604606451
   },
   "command": {
     "type": "sequential",
@@ -20,31 +20,43 @@
         {
           "type": "named",
           "data": {
-            "name": "G"
+            "name": "Shoot Note Half Speed"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
+          "data": {
+            "name": "GoToIntakePosition"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Middle Path"
+                  "pathName": "Sub3 to Note3"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "GoToAmpPosition"
+                  "name": "Intake Note"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToAmpPosition"
           }
         }
       ]
     }
   },
-  "folder": "Red Alliance",
+  "folder": "[3]",
   "choreoAuto": false
 }

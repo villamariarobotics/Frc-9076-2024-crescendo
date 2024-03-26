@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.300905935145204,
+      "y": 5.558377783422233
+    },
+    "rotation": -179.77592586086735
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToSpeakerPosition"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note Half Speed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToAmpPosition"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Misc",
+  "choreoAuto": false
+}
