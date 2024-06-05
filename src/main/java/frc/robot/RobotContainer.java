@@ -5,24 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.EndEffector.IntakingNote;
 import frc.robot.commands.EndEffector.ShootingNote;
@@ -34,22 +19,18 @@ import frc.robot.commands.Auto.AutoShootingNote;
 import frc.robot.commands.Auto.AutoIntakeNote;
 import frc.robot.commands.EndEffector.IntakeAndShooting;
 import frc.robot.subsystems.DriveSubsystem;
-//// import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import frc.robot.subsystems.EndEffectorSubsystem;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+// import static frc.robot.subsystems.drive.DriveConstants.*;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -57,19 +38,18 @@ import frc.robot.subsystems.EndEffectorSubsystem;
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
-@SuppressWarnings("unused")
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final SendableChooser<Command> m_autoChooser;
-
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> m_autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final PivotSubsystem m_pivotSubsystem = new PivotSubsystem();
   private final EndEffectorSubsystem m_endEffectorSubsystem = new EndEffectorSubsystem();
-  
+
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   private final Joystick EndEffectorcontroller = new Joystick(1);
-  
+
   private final JoystickButton blue_button = new JoystickButton(EndEffectorcontroller, 1);
   private final JoystickButton green_button = new JoystickButton(EndEffectorcontroller, 2);
   private final JoystickButton red_button = new JoystickButton(EndEffectorcontroller, 3);
@@ -78,26 +58,25 @@ public class RobotContainer {
   private final JoystickButton right_bumper = new JoystickButton(EndEffectorcontroller, 6);
   private final JoystickButton left_trigger = new JoystickButton(EndEffectorcontroller, 7);
   private final JoystickButton right_trigger = new JoystickButton(EndEffectorcontroller, 8);
-  
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
 
+    // initialize the dashboard auto chooser
+    m_autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
     NamedCommands.registerCommand("GoToSpeakerPosition", new PivotGoToSpeakerPositionCommand(m_pivotSubsystem));
     NamedCommands.registerCommand("GoToAmpPosition", new PivotGoToAmpPositionCommand(m_pivotSubsystem));
     NamedCommands.registerCommand("GoToIntakePosition", new PivotGoToIntakePositionCommand(m_pivotSubsystem));
     NamedCommands.registerCommand("Shoot Note Full Speed", new AutoShootingNote(m_endEffectorSubsystem, 1));
-    NamedCommands.registerCommand("Shoot Note Half Speed", new AutoShootingNote(m_endEffectorSubsystem, 0.65)); //TODO Change shooterSpeed
+    NamedCommands.registerCommand("Shoot Note Half Speed", new AutoShootingNote(m_endEffectorSubsystem, 0.65));
     NamedCommands.registerCommand("Intake Note", new AutoIntakeNote(m_endEffectorSubsystem));
-
-    m_autoChooser = AutoBuilder.buildAutoChooser();
-    
-    SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     // Configure the button bindings
     configureButtonBindings();
-    
+
     // Configure default commands
     defaultCommands();
   }
@@ -114,7 +93,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // Driver Controller - Right Trigger makes wheels go to X-formation
-    new JoystickButton(m_driverController, Button.kR1.value).whileTrue(new RunCommand(() -> m_robotDrive.setX(),m_robotDrive));
+    new JoystickButton(m_driverController, Button.kR1.value)
+        .whileTrue(new RunCommand(() -> m_robotDrive.setX(), m_robotDrive));
 
     // EndEffector Controller - 8 Buttons Configured
     blue_button.whileTrue(new pivotMoveCommand(m_pivotSubsystem, EndEffectorcontroller));
@@ -133,36 +113,44 @@ public class RobotContainer {
         new RunCommand(() -> {
           if (m_driverController.getAButton()) {
             m_robotDrive.drive(
-                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftY())*Math.pow(m_driverController.getLeftY(),2), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftX())*Math.pow(m_driverController.getLeftX(),2), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband((m_driverController.getRightX() + m_driverController.getRightTriggerAxis() - m_driverController.getLeftTriggerAxis()) * 1, OIConstants.kDriveDeadband),
-            false, true);
-        } else {
+                -MathUtil.applyDeadband(
+                    Math.signum(m_driverController.getLeftY()) * Math.pow(m_driverController.getLeftY(), 2),
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(
+                    Math.signum(m_driverController.getLeftX()) * Math.pow(m_driverController.getLeftX(), 2),
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband((m_driverController.getRightX() + m_driverController.getRightTriggerAxis()
+                    - m_driverController.getLeftTriggerAxis()) * 1, OIConstants.kDriveDeadband),
+                false, true);
+          } else {
             m_robotDrive.drive(
-                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftY())*Math.pow(m_driverController.getLeftY(),2) * 0.5, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.signum(m_driverController.getLeftX())*Math.pow(m_driverController.getLeftX(),2) * 0.5, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband((m_driverController.getRightX() + m_driverController.getRightTriggerAxis() - m_driverController.getLeftTriggerAxis()) * 1, OIConstants.kDriveDeadband),
-            false, true);
-        }
+                -MathUtil.applyDeadband(
+                    Math.signum(m_driverController.getLeftY()) * Math.pow(m_driverController.getLeftY(), 2) * 0.5,
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(
+                    Math.signum(m_driverController.getLeftX()) * Math.pow(m_driverController.getLeftX(), 2) * 0.5,
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband((m_driverController.getRightX() + m_driverController.getRightTriggerAxis()
+                    - m_driverController.getLeftTriggerAxis()) * 1, OIConstants.kDriveDeadband),
+                false, true);
+          }
         }, m_robotDrive));
-    
+
   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * '
+   * 
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    Command autoCommand = m_autoChooser.getSelected();
-      autoCommand.addRequirements(m_robotDrive, m_pivotSubsystem, m_endEffectorSubsystem);
-    return autoCommand;
-
+    return m_autoChooser.get();
     // return new PivotGoToSpeakerPositionCommand(m_pivotSubsystem).andThen(
-    //   new AutoShootingNote(m_endEffectorSubsystem).andThen(
-    //     new PivotGoToAmpPositionCommand(m_pivotSubsystem)
-    //   )
+    // new AutoShootingNote(m_endEffectorSubsystem).andThen(
+    // new PivotGoToAmpPositionCommand(m_pivotSubsystem)
+    // )
     // );
   }
 }

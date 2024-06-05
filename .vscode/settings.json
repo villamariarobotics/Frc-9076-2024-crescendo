@@ -18,33 +18,49 @@
     {
       "name": "WPIlibUnitTests",
       "workingDirectory": "${workspaceFolder}/build/jni/release",
-      "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
+      "vmargs": ["-Djava.library.path=${workspaceFolder}/build/jni/release"],
       "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
         "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
       }
-    },
+    }
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "cSpell.words": [
     "ADXRS",
+    "akit",
     "apriltag",
     "Brushless",
+    "COMPBOT",
     "Deadband",
     "Effectorcontroller",
+    "Intaking",
+    "linuxathena",
+    "linuxx",
+    "littletonrobotics",
+    "networktables",
     "odometry",
+    "osxuniversal",
+    "pathfind",
+    "Pathfinding",
+    "pathplanner",
     "photonlib",
     "photonvision",
     "revrobotics",
     "setpoint",
     "setpoints",
+    "SIMBOT",
     "smartdashboard",
     "stepsize",
     "teleop",
     "teleoperated",
     "testpivotcomand",
+    "Uncomitted",
+    "windowsx",
     "wpilib",
-    "wpilibj"
+    "wpilibio",
+    "wpilibj",
+    "WPILOG"
   ],
   "java.debug.settings.onBuildFailureProceed": true
 }

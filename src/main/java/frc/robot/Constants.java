@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import frc.utils.Alert;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -24,6 +26,52 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final int loopPeriodMs = 20;
+  private static RobotType robotType = RobotType.SIMBOT;
+  public static final boolean tuningMode = true;
+  public static final boolean characterizationMode = false;
+
+  public static RobotType getRobot() {
+    if (RobotBase.isReal() && robotType == RobotType.SIMBOT) {
+      new Alert("Invalid Robot Selected, using COMPBOT as default", Alert.AlertType.ERROR)
+          .set(true);
+      robotType = RobotType.COMPBOT;
+    }
+    return robotType;
+  }
+
+  public static Mode getMode() {
+    return switch (getRobot()) {
+      case COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+      case SIMBOT -> Mode.SIM;
+    };
+  }
+
+  public enum Mode {
+    /** Running on a real robot. */
+    REAL,
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
+  }
+
+  public enum RobotType {
+    SIMBOT,
+    COMPBOT
+  }
+
+  /** Checks whether the robot the correct robot is selected when deploying. */
+  public static void main(String... args) {
+    if (robotType == RobotType.SIMBOT) {
+      System.err.println("Cannot deploy, invalid robot selected: " + robotType.toString());
+      System.exit(1);
+    }
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
